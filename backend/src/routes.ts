@@ -8,6 +8,10 @@ const authcontroller = new AuthController();
 
 const router = Router();
 
+router.post("/", (req, res) => {
+  res.status(200).json({ message: "Bem vindo ao backend" });
+});
+
 // Rotas de autenticação
 router.post("/users", authcontroller.createUser);
 router.post("/login", authcontroller.authUser);

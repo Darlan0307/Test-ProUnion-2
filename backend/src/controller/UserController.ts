@@ -23,6 +23,7 @@ export class UserController {
       // converter id para um id do tipo number
       const idNumber = Number(id);
       const { name, email, password } = req.body;
+      let new_password;
 
       //  Verificando se o usuario existe
       const userExists = await prisma.user.findUnique({
@@ -35,12 +36,9 @@ export class UserController {
       }
 
       // Criptografando a senha
-      const new_password = await bcrypt.hash(password, 10);
-      //  Verificando se a senha atual é a mesma da nova senha
-      const passwordIsSame = await bcrypt.compare(
-        password,
-        userExists.password
-      );
+      if (password) {
+        new_password = await bcrypt.hash(password, 10);
+      }
 
       // Atualizando o usuário
 
@@ -49,8 +47,8 @@ export class UserController {
         data: {
           name,
           email,
-          // Se a senha atual é a mesma da nova senha, manter a senha antiga
-          password: passwordIsSame ? userExists.password : new_password,
+          // Se o usuário não atualizar a senha, manter a senha antiga
+          password: password ? new_password : userExists.password,
         },
       });
 
