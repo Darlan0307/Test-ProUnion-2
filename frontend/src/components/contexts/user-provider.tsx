@@ -136,7 +136,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     user,
     signIn,
     signUp,
-    signed: !!user,
+    signed: user.token !== "",
     signOut,
   };
 

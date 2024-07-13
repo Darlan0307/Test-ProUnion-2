@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
 import ListUsers from "./pages/list-users";
+import PrivateRouter from "./private-router";
 
 const Routers = () => {
   return (
@@ -10,7 +11,10 @@ const Routers = () => {
         <Routes>
           <Route index element={<SignIn />} />
           <Route path="/register" element={<SignUp />} />
-          <Route path="/users" element={<ListUsers />} />
+
+          <Route path="/users" element={<PrivateRouter />}>
+            <Route path="/users" element={<ListUsers />} />
+          </Route>
         </Routes>
       </main>
     </BrowserRouter>
