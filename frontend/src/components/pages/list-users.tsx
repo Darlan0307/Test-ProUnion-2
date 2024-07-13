@@ -69,7 +69,7 @@ const ListUsers = () => {
                   {user.password}
                 </TableCell>
                 <TableCell>
-                  <ActionsUsers />
+                  <ActionsUsers user={user} />
                 </TableCell>
               </TableRow>
             ))}

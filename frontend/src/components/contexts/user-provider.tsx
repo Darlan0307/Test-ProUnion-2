@@ -1,35 +1,10 @@
 import { api } from "@/services/api";
-import { AxiosError } from "axios";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-
-// Tipo de usuário autenticado
-type UserAuth = {
-  info: {
-    id: number;
-    email: string;
-  };
-  token: string;
-};
-
-// Tipo de contexto
-type ContextValue = {
-  user: UserAuth;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (name: string, email: string, password: string) => Promise<void>;
-  signOut: () => void;
-  signed: boolean;
-};
-
-// Criando o contexto
-export const UserContext = createContext({} as ContextValue);
+import { UserAuth, UserContext } from "./user-context";
+import { UserResponse } from "@/@types/type-user";
+import { errorMessage } from "@/utils/error-message";
+import { sucessMessage } from "@/utils/sucess-message";
 
 // Provider
 export const UserProvider = ({ children }: { children: ReactNode }) => {
@@ -48,7 +23,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const loadingStoreData = () => {
       const storageUser = JSON.parse(
-        localStorage.getItem("@Auth:user") || "{}"
+        localStorage.getItem("@Auth:user") || "null"
       );
       const storageToken = localStorage.getItem("@Auth:token");
 
@@ -77,21 +52,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("@Auth:token", response.data.token);
       setSigned(true);
       // Notificando que o usuário foi criado com sucesso
-      toast.success("Conta criada com sucesso!", {
-        style: {
-          backgroundColor: "#2da04c",
-        },
-      });
+      sucessMessage("Conta criada com sucesso!");
       navigate("/users");
     } catch (error) {
       // Notificando que houve um erro ao criar o usuário
-      if (error instanceof AxiosError && error.response?.data.message) {
-        toast.error(error.response.data.message, {
-          style: {
-            backgroundColor: "#e0382c",
-          },
-        });
-      }
+      errorMessage(error);
     }
   };
 
@@ -108,20 +73,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("@Auth:user", JSON.stringify(response.data.user));
       localStorage.setItem("@Auth:token", response.data.token);
       setSigned(true);
-      toast.success("Logado com sucesso!", {
-        style: {
-          backgroundColor: "#2da04c",
-        },
-      });
+      sucessMessage("Logado com sucesso!");
       navigate("/users");
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.data.message) {
-        toast.error(error.response.data.message, {
-          style: {
-            backgroundColor: "#e0382c",
-          },
-        });
-      }
+      errorMessage(error);
     }
   };
 
@@ -138,12 +93,33 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const updateUser = async (user: UserResponse) => {
+    const { id, ...rest } = user;
+    try {
+      await api.put(`/users/${id}`, rest);
+      sucessMessage("Usuário atualizado com sucesso!");
+    } catch (error) {
+      errorMessage(error);
+    }
+  };
+
+  const deleteUser = async (id: number) => {
+    try {
+      await api.delete(`/users/${id}`);
+      sucessMessage("Usuário deletado com sucesso!");
+    } catch (error) {
+      errorMessage(error);
+    }
+  };
+
   const values = {
     user,
     signIn,
     signUp,
     signed,
     signOut,
+    updateUser,
+    deleteUser,
   };
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
 };

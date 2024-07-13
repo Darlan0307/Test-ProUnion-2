@@ -6,8 +6,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Ellipsis } from "lucide-react";
 import { Button } from "./ui/button";
+import DialogDelete from "./dialog-delete";
+import DialogUpdate from "./dialog-update";
+import { UserResponse } from "@/@types/type-user";
 
-const ActionsUsers = () => {
+export type Props = {
+  user: UserResponse;
+};
+
+const ActionsUsers = ({ user }: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -16,8 +23,12 @@ const ActionsUsers = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>Editar</DropdownMenuItem>
-        <DropdownMenuItem>Excluir</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <DialogUpdate user={user} />
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <DialogDelete id={user.id} />
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
