@@ -40,8 +40,10 @@ export default function SignUp() {
     const isValid = validadeFormRegister(data);
     // Verificando se os dados são válidos
     if (isValid) {
-      await signUp(data.name, data.email, data.password);
-      navigate("/users");
+      const isSuccess = await signUp(data.name, data.email, data.password);
+      if (isSuccess) {
+        navigate("/users");
+      }
     }
   };
 

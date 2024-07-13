@@ -21,8 +21,8 @@ type UserAuth = {
 // Tipo de contexto
 type ContextValue = {
   user: UserAuth;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (name: string, email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<boolean>;
+  signUp: (name: string, email: string, password: string) => Promise<boolean>;
   signOut: () => void;
   signed: boolean;
 };
@@ -75,6 +75,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           backgroundColor: "#2da04c",
         },
       });
+      return true;
     } catch (error) {
       // Notificando que houve um erro ao criar o usuário
       if (error instanceof AxiosError && error.response?.data.message) {
@@ -84,6 +85,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           },
         });
       }
+      return false;
     }
   };
 
@@ -105,6 +107,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           backgroundColor: "#2da04c",
         },
       });
+      return true;
     } catch (error) {
       if (error instanceof AxiosError && error.response?.data.message) {
         toast.error(error.response.data.message, {
@@ -113,6 +116,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           },
         });
       }
+      return false;
     }
   };
 

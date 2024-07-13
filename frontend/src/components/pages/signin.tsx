@@ -9,9 +9,31 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../contexts/user-provider";
+import { FormEvent, useState } from "react";
+import { validadeFormLogin } from "@/hooks/validate-form-login";
 
 export default function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const { signIn } = useUser();
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const isValid = validadeFormLogin(email, password);
+    // Verificando se os dados são válidos
+    if (isValid) {
+      const isSuccess = await signIn(email, password);
+      if (isSuccess) {
+        navigate("/users");
+      }
+    }
+  };
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -21,14 +43,15 @@ export default function SignIn() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="grid gap-4">
+        <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
               placeholder="m@example.com"
-              required
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
             />
           </div>
           <div className="grid gap-2">
@@ -36,8 +59,9 @@ export default function SignIn() {
             <Input
               id="password"
               type="password"
-              required
               placeholder="******"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
             />
           </div>
           <Button type="submit" className="w-full">
