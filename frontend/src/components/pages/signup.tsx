@@ -11,8 +11,35 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FormEvent, useState } from "react";
+import { validadeFormRegister } from "@/hooks/validade-form-register";
+import { User } from "@/@types/type-user";
 
 export default function SignUp() {
+  const [data, setData] = useState<User>({
+    name: "",
+    email: "",
+    password: "",
+    comfirm_password: "",
+  });
+
+  const handleDataUser = (key: string, value: string) => {
+    setData({
+      ...data,
+      [key]: value,
+    });
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    const isValid = validadeFormRegister(data);
+
+    if (isValid) {
+      console.log(data);
+    }
+  };
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -22,10 +49,16 @@ export default function SignUp() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="grid gap-4">
+        <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="nome">Nome</Label>
-            <Input id="nome" type="text" required placeholder="pedro gás" />
+            <Input
+              id="nome"
+              type="text"
+              placeholder="pedro gás"
+              onChange={(e) => handleDataUser("name", e.target.value)}
+              value={data.name}
+            />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
@@ -33,7 +66,8 @@ export default function SignUp() {
               id="email"
               type="email"
               placeholder="m@example.com"
-              required
+              onChange={(e) => handleDataUser("email", e.target.value)}
+              value={data.email}
             />
           </div>
           <div className="grid gap-2">
@@ -41,8 +75,9 @@ export default function SignUp() {
             <Input
               id="password"
               type="password"
-              required
               placeholder="******"
+              onChange={(e) => handleDataUser("password", e.target.value)}
+              value={data.password}
             />
           </div>
           <div className="grid gap-2">
@@ -50,8 +85,11 @@ export default function SignUp() {
             <Input
               id="passwordComfirm"
               type="password"
-              required
               placeholder="******"
+              onChange={(e) =>
+                handleDataUser("comfirm_password", e.target.value)
+              }
+              value={data.comfirm_password}
             />
           </div>
           <Button type="submit" className="w-full">
