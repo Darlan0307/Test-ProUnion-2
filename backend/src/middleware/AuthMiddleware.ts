@@ -23,7 +23,7 @@ export function AuthMiddleWares(
 
   try {
     // Verificando se o token é válido
-    const secret = process.env.SECRET;
+    const secret = process.env.SECRET_KEY;
     const decoded = jsonwebtoken.verify(token, `${secret}`);
     const { id } = decoded as TokenPayload;
     req.userId = id;
