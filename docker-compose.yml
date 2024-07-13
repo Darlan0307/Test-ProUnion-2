@@ -12,5 +12,15 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
+  api:
+    container_name: api-darlan
+    build: ./backend
+    ports:
+      - "5002:5002"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - postgres
+
 volumes:
   postgres-data:

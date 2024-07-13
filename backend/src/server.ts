@@ -11,6 +11,6 @@ app.use(cors());
 // registrando rotas
 app.use(router);
 // iniciando o servidor
-app.listen(3001, () => {
-  console.log("API rodando em http://localhost:3001");
+app.listen(5002, () => {
+  console.log("API rodando em http://localhost:5002");
 });
