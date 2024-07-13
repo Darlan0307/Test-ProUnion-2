@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,15 +13,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormEvent, useState } from "react";
 import { validadeFormRegister } from "@/hooks/validade-form-register";
-import { User } from "@/@types/type-user";
+import { UserFormRegister } from "@/@types/type-user";
+import { useUser } from "../contexts/user-provider";
 
 export default function SignUp() {
-  const [data, setData] = useState<User>({
+  const [data, setData] = useState<UserFormRegister>({
     name: "",
     email: "",
     password: "",
     comfirm_password: "",
   });
+
+  const navigate = useNavigate();
+  const { signUp } = useUser();
 
   const handleDataUser = (key: string, value: string) => {
     setData({
@@ -34,9 +38,10 @@ export default function SignUp() {
     e.preventDefault();
 
     const isValid = validadeFormRegister(data);
-
+    // Verificando se os dados são válidos
     if (isValid) {
-      console.log(data);
+      await signUp(data.name, data.email, data.password);
+      navigate("/users");
     }
   };
 

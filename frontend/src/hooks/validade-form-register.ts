@@ -1,69 +1,51 @@
-import { User } from "@/@types/type-user";
+import { UserFormRegister } from "@/@types/type-user";
 import { toast } from "sonner";
 
+// Função para validar o email
 function isValidEmail(email: string) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   return emailRegex.test(email);
 }
 
-export const validadeFormRegister = (data: User) => {
+// mandar notificação de erro
+function sendError(message: string) {
+  toast.error(message, {
+    style: {
+      backgroundColor: "#e0382c",
+    },
+  });
+}
+
+export const validadeFormRegister = (data: UserFormRegister) => {
   let isValid = true;
 
   if (!data.name) {
-    toast.error("Nome é obrigatório", {
-      style: {
-        backgroundColor: "#e0382c",
-      },
-    });
+    sendError("Nome é obrigatório");
     isValid = false;
   } else if (data.name.length < 3) {
-    toast.warning("Nome deve ter no mínimo 3 caracteres", {
-      style: {
-        backgroundColor: "#e0382c",
-      },
-    });
+    sendError("Nome deve ter no mínimo 3 caracteres");
     isValid = false;
   }
 
   if (!data.email) {
-    toast.error("Email é obrigatório", {
-      style: {
-        backgroundColor: "#e0382c",
-      },
-    });
+    sendError("Email é obrigatório");
     isValid = false;
   } else if (!isValidEmail(data.email)) {
-    toast.error("Email inválido", {
-      style: {
-        backgroundColor: "#e0382c",
-      },
-    });
+    sendError("Email inválido");
     isValid = false;
   }
 
   if (!data.password) {
-    toast.error("Senha é obrigatório", {
-      style: {
-        backgroundColor: "#e0382c",
-      },
-    });
+    sendError("Senha é obrigatório");
     isValid = false;
   } else if (data.password.length < 6) {
-    toast.warning("Senha deve ter no mínimo 6 caracteres", {
-      style: {
-        backgroundColor: "#e0382c",
-      },
-    });
+    sendError("Senha deve ter no mínimo 6 caracteres");
     isValid = false;
   }
 
   if (data.password !== data.comfirm_password) {
-    toast.warning("As senhas não coincidem", {
-      style: {
-        backgroundColor: "#e0382c",
-      },
-    });
+    sendError("As senhas não coincidem");
     isValid = false;
   }
 
