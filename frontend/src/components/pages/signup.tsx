@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +24,6 @@ export default function SignUp() {
     comfirm_password: "",
   });
 
-  const navigate = useNavigate();
   const { signUp } = useUser();
 
   const handleDataUser = (key: string, value: string) => {
@@ -40,10 +39,7 @@ export default function SignUp() {
     const isValid = validadeFormRegister(data);
     // Verificando se os dados são válidos
     if (isValid) {
-      const isSuccess = await signUp(data.name, data.email, data.password);
-      if (isSuccess) {
-        navigate("/users");
-      }
+      await signUp(data.name, data.email, data.password);
     }
   };
 

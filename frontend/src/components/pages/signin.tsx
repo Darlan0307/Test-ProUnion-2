@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useUser } from "../contexts/user-provider";
 import { FormEvent, useState } from "react";
 import { validadeFormLogin } from "@/hooks/validate-form-login";
@@ -18,8 +18,6 @@ export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
-
   const { signIn } = useUser();
 
   const handleSubmit = async (e: FormEvent) => {
@@ -27,10 +25,7 @@ export default function SignIn() {
     const isValid = validadeFormLogin(email, password);
     // Verificando se os dados são válidos
     if (isValid) {
-      const isSuccess = await signIn(email, password);
-      if (isSuccess) {
-        navigate("/users");
-      }
+      await signIn(email, password);
     }
   };
 

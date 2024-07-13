@@ -13,10 +13,12 @@ import { LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { UseDataUsers } from "@/hooks/fetch-users";
 
 const ListUsers = () => {
   const navigate = useNavigate();
   const { signOut } = useUser();
+  const { dataUsers } = UseDataUsers();
 
   const handleSignOut = () => {
     signOut();
@@ -30,8 +32,8 @@ const ListUsers = () => {
 
   return (
     <div>
-      <div>
-        <Button onClick={handleSignOut} size="icon">
+      <div className="flex justify-end">
+        <Button onClick={handleSignOut} size="icon" className="rounded-full">
           <LogOut />
         </Button>
       </div>
@@ -48,19 +50,29 @@ const ListUsers = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">123</TableCell>
-            <TableCell>darlan</TableCell>
-            <TableCell className="max-w-[200px] overflow-hidden text-ellipsis text-nowrap">
-              darlan@gmail.com
-            </TableCell>
-            <TableCell className="max-w-[200px] overflow-hidden text-ellipsis text-nowrap">
-              senha
-            </TableCell>
-            <TableCell>
-              <ActionsUsers />
-            </TableCell>
-          </TableRow>
+          {dataUsers.length == 0 && (
+            <TableRow>
+              <TableCell className="font-medium text-lg" colSpan={5}>
+                Sem usuários cadastrados
+              </TableCell>
+            </TableRow>
+          )}
+          {dataUsers.length > 0 &&
+            dataUsers.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell className="font-medium">{user.id}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell className="max-w-[200px] overflow-hidden text-ellipsis text-nowrap">
+                  {user.email}
+                </TableCell>
+                <TableCell className="max-w-[200px] overflow-hidden text-ellipsis text-nowrap">
+                  {user.password}
+                </TableCell>
+                <TableCell>
+                  <ActionsUsers />
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>

@@ -7,11 +7,12 @@ import {
   useEffect,
   useState,
 } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 // Tipo de usuário autenticado
 type UserAuth = {
-  user: {
+  info: {
     id: number;
     email: string;
   };
@@ -21,8 +22,8 @@ type UserAuth = {
 // Tipo de contexto
 type ContextValue = {
   user: UserAuth;
-  signIn: (email: string, password: string) => Promise<boolean>;
-  signUp: (name: string, email: string, password: string) => Promise<boolean>;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (name: string, email: string, password: string) => Promise<void>;
   signOut: () => void;
   signed: boolean;
 };
@@ -32,13 +33,16 @@ export const UserContext = createContext({} as ContextValue);
 
 // Provider
 export const UserProvider = ({ children }: { children: ReactNode }) => {
+  const [signed, setSigned] = useState(false);
   const [user, setUser] = useState<UserAuth>({
-    user: {
+    info: {
       id: 0,
       email: "",
     },
     token: "",
   });
+
+  const navigate = useNavigate();
 
   // Carregando os dados do localstorage
   useEffect(() => {
@@ -50,10 +54,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
       if (storageUser && storageToken) {
         setUser(storageUser);
+        setSigned(true);
+        navigate("/users");
       }
     };
     loadingStoreData();
-  }, []);
+  }, [navigate]);
 
   const signUp = async (name: string, email: string, password: string) => {
     try {
@@ -69,13 +75,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
       localStorage.setItem("@Auth:user", JSON.stringify(response.data.user));
       localStorage.setItem("@Auth:token", response.data.token);
+      setSigned(true);
       // Notificando que o usuário foi criado com sucesso
       toast.success("Conta criada com sucesso!", {
         style: {
           backgroundColor: "#2da04c",
         },
       });
-      return true;
+      navigate("/users");
     } catch (error) {
       // Notificando que houve um erro ao criar o usuário
       if (error instanceof AxiosError && error.response?.data.message) {
@@ -85,7 +92,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           },
         });
       }
-      return false;
     }
   };
 
@@ -101,13 +107,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
       localStorage.setItem("@Auth:user", JSON.stringify(response.data.user));
       localStorage.setItem("@Auth:token", response.data.token);
-
+      setSigned(true);
       toast.success("Logado com sucesso!", {
         style: {
           backgroundColor: "#2da04c",
         },
       });
-      return true;
+      navigate("/users");
     } catch (error) {
       if (error instanceof AxiosError && error.response?.data.message) {
         toast.error(error.response.data.message, {
@@ -116,15 +122,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           },
         });
       }
-      return false;
     }
   };
 
   const signOut = () => {
     localStorage.removeItem("@Auth:user");
     localStorage.removeItem("@Auth:token");
+    setSigned(false);
     setUser({
-      user: {
+      info: {
         id: 0,
         email: "",
       },
@@ -136,10 +142,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     user,
     signIn,
     signUp,
-    signed: user.token !== "",
+    signed,
     signOut,
   };
-
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
 };
 
