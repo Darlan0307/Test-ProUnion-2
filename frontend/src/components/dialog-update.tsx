@@ -1,5 +1,6 @@
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -9,14 +10,16 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { FormEvent, useState } from "react";
-import { UserFormRegister } from "@/@types/type-user";
+import { UserFormRegister, UserResponse } from "@/@types/type-user";
 import { Props } from "./actions-users";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { validadeFormUpdate } from "@/hooks/validade-form-update";
+import { useUser } from "./contexts/user-provider";
 
 const DialogUpdate = ({ user }: Props) => {
   const [open, setOpen] = useState(false);
+  // Dados do usuário atual
   const [data, setData] = useState<UserFormRegister>({
     name: user.name,
     email: user.email,
@@ -24,6 +27,9 @@ const DialogUpdate = ({ user }: Props) => {
     comfirm_password: "",
   });
 
+  const { updateUser } = useUser();
+
+  // Função para atualizar os dados do usuário
   const handleDataUser = (key: string, value: string) => {
     setData({
       ...data,
@@ -37,9 +43,15 @@ const DialogUpdate = ({ user }: Props) => {
     const isValid = validadeFormUpdate(data, open);
     // Verificando se os dados são válidos
     if (isValid) {
-      console.log(data);
+      // Criando o objeto de dados para atualizar o usuário
+      const userUpdate: UserResponse = {
+        id: user.id,
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      };
 
-      alert("Enviando dados para o backend");
+      await updateUser(userUpdate);
     }
   };
   return (
@@ -75,11 +87,13 @@ const DialogUpdate = ({ user }: Props) => {
           {open && (
             <div className="grid gap-4">
               <Input
+                type="password"
                 placeholder="sua nova senha"
                 value={data.password}
                 onChange={(e) => handleDataUser("password", e.target.value)}
               />
               <Input
+                type="password"
                 placeholder="comfirme sua nova senha"
                 value={data.comfirm_password}
                 onChange={(e) =>
@@ -88,7 +102,10 @@ const DialogUpdate = ({ user }: Props) => {
               />
             </div>
           )}
-          <Button type="submit">Salvar</Button>
+
+          <DialogClose asChild>
+            <Button type="submit">Salvar</Button>
+          </DialogClose>
         </form>
       </DialogContent>
     </Dialog>

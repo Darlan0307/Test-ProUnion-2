@@ -9,8 +9,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useUser } from "./contexts/user-provider";
 
 const DialogDelete = ({ id }: { id: number }) => {
+  const { deleteUser } = useUser();
   return (
     <AlertDialog>
       <AlertDialogTrigger className="text-sm hover:bg-muted w-full py-1">
@@ -26,8 +28,8 @@ const DialogDelete = ({ id }: { id: number }) => {
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => {
-              alert(`Deletar ${id}`);
+            onClick={async () => {
+              await deleteUser(id);
             }}
           >
             Confirmar
