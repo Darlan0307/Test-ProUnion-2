@@ -19,6 +19,8 @@ type ContextValue = {
   signed: boolean;
   updateUser: (user: UserResponse) => Promise<void>;
   deleteUser: (id: number) => Promise<void>;
+  reloadData: boolean;
+  setReloadData: (reloadData: boolean) => void;
 };
 
 // Criando o contexto
