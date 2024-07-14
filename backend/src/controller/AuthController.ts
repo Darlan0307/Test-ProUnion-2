@@ -8,13 +8,13 @@ export class AuthController {
     try {
       const { email, password } = req.body;
 
-      // Verificando email
+      // Verificando se o email existe
       const userExists = await prisma.user.findUnique({ where: { email } });
 
       if (!userExists)
         return res.status(401).json({ message: "E-mail ou senha inválido" });
 
-      // Verificando senha
+      // Verificando se a senha está correta
       const isValuePassword = await bcrypt.compare(
         password,
         userExists.password
@@ -23,6 +23,7 @@ export class AuthController {
       if (!isValuePassword)
         return res.status(401).json({ message: "E-mail ou senha inválido" });
 
+      // Autenticando o usuário atribuindo um token
       const secret = process.env.SECRET_KEY;
 
       const token = jsonwebtoken.sign({ id: userExists.id }, `${secret}`, {

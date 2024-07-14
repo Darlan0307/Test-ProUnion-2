@@ -8,7 +8,7 @@ const authcontroller = new AuthController();
 
 const router = Router();
 
-router.post("/", (req, res) => {
+router.get("/", (_, res) => {
   res.status(200).json({ message: "Bem vindo ao backend" });
 });
 

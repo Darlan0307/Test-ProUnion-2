@@ -23,6 +23,7 @@ export class UserController {
       // converter id para um id do tipo number
       const idNumber = Number(id);
       const { name, email, password } = req.body;
+      // Variável para armazenar a senha atual caso tenha sido alterada
       let new_password;
 
       //  Verificando se o usuario existe
