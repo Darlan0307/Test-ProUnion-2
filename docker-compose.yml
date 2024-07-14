@@ -3,24 +3,32 @@ services:
   postgres:
     image: postgres:latest
     container_name: postgres
-    environment:
+    environment: # Variáveis de ambiente para configurar o PostgreSQL
       POSTGRES_USER: darlan
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: mydb
     ports:
       - "5432:5432"
-    volumes:
+    volumes: # Volume para persistir os dados do banco
       - postgres-data:/var/lib/postgresql/data
 
   api:
     container_name: api-darlan
     build: ./backend
     ports:
-      - "5002:5002"
-    env_file:
+      - "3000:3000"
+    env_file: # Arquivo de variáveis de ambiente para configurar o backend
       - ./backend/.env
-    depends_on:
+    depends_on: # a api depende do postgres para funcionar
       - postgres
+
+  app:
+    container_name: app-darlan
+    build: ./frontend
+    ports:
+      - "3007:3007"
+    depends_on: # o app depende da api para funcionar
+      - api
 
 volumes:
   postgres-data:
