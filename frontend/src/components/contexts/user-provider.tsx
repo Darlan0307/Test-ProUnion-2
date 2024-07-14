@@ -103,6 +103,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     try {
       // Atualizando o usuário no banco de dados
       await api.put(`/users/${id}`, rest);
+      // Atualizando o estado do reloadData para atualizar a lista de usuários
       setReloadData(true);
       sucessMessage("Usuário atualizado com sucesso!");
     } catch (error) {
@@ -114,6 +115,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     try {
       // Deletando o usuário no banco de dados
       await api.delete(`/users/${id}`);
+      // Atualizando o estado do reloadData para atualizar a lista de usuários
       setReloadData(true);
       sucessMessage("Usuário deletado com sucesso!");
     } catch (error) {

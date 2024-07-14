@@ -1,9 +1,8 @@
 import { UserResponse } from "@/@types/type-user";
 import { useUser } from "@/components/contexts/user-provider";
 import { api } from "@/services/api";
-import { AxiosError } from "axios";
+import { errorMessage } from "@/utils/error-message";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export const UseDataUsers = () => {
   const [dataUsers, setDataUsers] = useState<UserResponse[]>([]);
@@ -12,24 +11,21 @@ export const UseDataUsers = () => {
 
   async function fetchDataUsers() {
     try {
+      // buscando todos os dados dos usuários
       const response = await api.get("/users");
       setDataUsers(response.data);
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.data.message) {
-        toast.error(error.response.data.message, {
-          style: {
-            backgroundColor: "#e0382c",
-          },
-        });
-      }
+      // Notificando que houve um erro ao buscar os dados dos usuários
+      errorMessage(error);
     }
   }
 
+  // buscando os dados dos usuários quando a página for carregada
   useEffect(() => {
     fetchDataUsers();
   }, []);
 
-  //  atualizar os dados dos usuários
+  //  atualizar os dados dos usuários da pagina quando  o estado reloadData for atualizado
   useEffect(() => {
     if (reloadData) {
       fetchDataUsers();

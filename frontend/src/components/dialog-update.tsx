@@ -18,6 +18,7 @@ import { validadeFormUpdate } from "@/hooks/validade-form-update";
 import { useUser } from "./contexts/user-provider";
 
 const DialogUpdate = ({ user }: Props) => {
+  // estado para mostrar os campos de alteração da senha
   const [open, setOpen] = useState(false);
   // Dados do usuário atual
   const [data, setData] = useState<UserFormRegister>({
