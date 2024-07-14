@@ -15,4 +15,4 @@ RUN npm i
 CMD ["npm", "start"]
 
 # Expondo a porta que a api usará
-EXPOSE 5002
+EXPOSE 3000
