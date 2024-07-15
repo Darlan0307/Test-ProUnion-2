@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { prisma } from "../prisma/prisma";
 import bcrypt from "bcryptjs";
+import db from "../db/db";
 
 export class UserController {
   async getAllUsers(req: Request, res: Response) {
     try {
-      // Buscando todos os usuários
-      const users = await prisma.user.findMany();
+      // Buscando todos os usuários no banco de dados
+      const users = await db.query("SELECT * FROM users");
 
-      res.status(200).json(users);
+      res.status(200).json(users.rows);
     } catch (error) {
       res
         .status(500)
@@ -20,20 +20,16 @@ export class UserController {
     try {
       const { id } = req.params;
 
-      // converter id para um id do tipo number
-      const idNumber = Number(id);
       const { name, email, password } = req.body;
       // Variável para armazenar a senha atual caso tenha sido alterada
       let new_password;
 
       //  Verificando se o usuario existe
-      const userExists = await prisma.user.findUnique({
-        where: { id: idNumber },
-      });
-
-      if (!userExists) {
-        res.status(404).json({ message: "Usuário não encontrado" });
-        return;
+      const userResult = await db.query("SELECT * FROM users WHERE id = $1", [
+        id,
+      ]);
+      if (userResult.rows.length == 0) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
       // Criptografando a senha
@@ -41,17 +37,16 @@ export class UserController {
         new_password = await bcrypt.hash(password, 10);
       }
 
-      // Atualizando o usuário
+      // Se o usuário não atualizar a senha, manter a senha antiga
+      const passwordCurrent = password
+        ? new_password
+        : userResult.rows[0].password;
 
-      await prisma.user.update({
-        where: { id: idNumber },
-        data: {
-          name,
-          email,
-          // Se o usuário não atualizar a senha, manter a senha antiga
-          password: password ? new_password : userExists.password,
-        },
-      });
+      // Atualizando o usuário
+      await db.query(
+        "UPDATE users SET name = $1, email = $2, password = $3 WHERE id = $4",
+        [name, email, passwordCurrent, id]
+      );
 
       res.status(200).json({ message: "Usuário atualizado com sucesso" });
     } catch (error) {
@@ -63,23 +58,16 @@ export class UserController {
     try {
       const { id } = req.params;
 
-      // converter id para um id do tipo number
-      const idNumber = Number(id);
-
       // Verificando se o usuário existe
-      const userExists = await prisma.user.findUnique({
-        where: { id: idNumber },
-      });
-
-      if (!userExists) {
-        res.status(404).json({ message: "Usuário não encontrado" });
-        return;
+      const userResult = await db.query("SELECT * FROM users WHERE id = $1", [
+        id,
+      ]);
+      if (userResult.rows.length == 0) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
       // Deletando o usuário
-      await prisma.user.delete({
-        where: { id: idNumber },
-      });
+      await db.query("DELETE FROM users WHERE id = $1", [id]);
 
       res.status(200).json({ message: "Usuário deletado com sucesso" });
     } catch (error) {
