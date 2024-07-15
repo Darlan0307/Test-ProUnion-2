@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import { useUser } from "../contexts/user-provider";
 import { FormEvent, useState } from "react";
-import { validadeFormLogin } from "@/hooks/validate-form-login";
+import { validadeFormLogin } from "@/utils/validate-form-login";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");

@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormEvent, useState } from "react";
-import { validadeFormRegister } from "@/hooks/validade-form-register";
+import { validadeFormRegister } from "@/utils/validade-form-register";
 import { UserFormRegister } from "@/@types/type-user";
 import { useUser } from "../contexts/user-provider";
 

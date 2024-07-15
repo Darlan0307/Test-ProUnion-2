@@ -14,7 +14,7 @@ import { UserFormRegister, UserResponse } from "@/@types/type-user";
 import { Props } from "./actions-users";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { validadeFormUpdate } from "@/hooks/validade-form-update";
+import { validadeFormUpdate } from "@/utils/validade-form-update";
 import { useUser } from "./contexts/user-provider";
 
 const DialogUpdate = ({ user }: Props) => {
