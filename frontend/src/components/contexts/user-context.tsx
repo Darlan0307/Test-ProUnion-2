@@ -1,4 +1,4 @@
-import { UserResponse } from "@/@types/type-user";
+import { UserFormRegister, UserResponse } from "@/@types/type-user";
 import { createContext } from "react";
 
 // Tipo de usuário autenticado
@@ -14,7 +14,10 @@ export type UserAuth = {
 type ContextValue = {
   user: UserAuth;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (name: string, email: string, password: string) => Promise<void>;
+  createUser: (
+    dataUser: Omit<UserFormRegister, "comfirm_password">,
+    isNewLogin?: boolean
+  ) => Promise<void>;
   signOut: () => void;
   signed: boolean;
   updateUser: (user: UserResponse) => Promise<void>;

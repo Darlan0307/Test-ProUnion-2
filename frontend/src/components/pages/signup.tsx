@@ -24,7 +24,7 @@ export default function SignUp() {
     comfirm_password: "",
   });
 
-  const { signUp } = useUser();
+  const { createUser } = useUser();
 
   const handleDataUser = (key: string, value: string) => {
     setData({
@@ -39,7 +39,14 @@ export default function SignUp() {
     const isValid = validadeFormRegister(data);
     // Verificando se os dados são válidos
     if (isValid) {
-      await signUp(data.name, data.email, data.password);
+      // Criando o objeto do usuário
+      const dataUser: Omit<UserFormRegister, "comfirm_password"> = {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      };
+      // Chamando a função de criação do usuário
+      await createUser(dataUser, true);
     }
   };
 

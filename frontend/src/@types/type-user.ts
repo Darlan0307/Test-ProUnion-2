@@ -11,3 +11,11 @@ export type UserResponse = {
   email: string;
   password: string;
 };
+
+export type AuthResponse = {
+  user: {
+    id: number;
+    email: string;
+  };
+  token: string;
+};

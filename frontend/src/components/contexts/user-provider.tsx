@@ -2,9 +2,10 @@ import { api } from "@/services/api";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserAuth, UserContext } from "./user-context";
-import { UserResponse } from "@/@types/type-user";
+import { UserFormRegister, UserResponse } from "@/@types/type-user";
 import { errorMessage } from "@/utils/error-message";
 import { sucessMessage } from "@/utils/sucess-message";
+import { saveAuth } from "@/utils/save-auth";
 
 // Provider
 export const UserProvider = ({ children }: { children: ReactNode }) => {
@@ -39,24 +40,25 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     loadingStoreData();
   }, [navigate]);
 
-  const signUp = async (name: string, email: string, password: string) => {
+  const createUser = async (
+    dataUser: Omit<UserFormRegister, "comfirm_password">,
+    isNewLogin?: boolean
+  ) => {
     try {
       // Criando o usuário
-      const response = await api.post("/users", { name, email, password });
+      const response = await api.post("/users", dataUser);
 
-      setUser(response.data);
+      // Se for um novo login, vamos autenticar o usuário
+      if (isNewLogin) {
+        setUser(response.data);
 
-      // Salvando o token no localstorage
-      api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${response.data.token}`;
-
-      localStorage.setItem("@Auth:user", JSON.stringify(response.data.user));
-      localStorage.setItem("@Auth:token", response.data.token);
-      setSigned(true);
-      // Notificando que o usuário foi criado com sucesso
-      sucessMessage("Conta criada com sucesso!");
-      navigate("/users");
+        // Salvando o token no localstorage
+        saveAuth(response.data);
+        setSigned(true);
+        // Notificando que o usuário foi criado com sucesso
+        sucessMessage("Conta criada com sucesso!");
+        navigate("/users");
+      }
     } catch (error) {
       // Notificando que houve um erro ao criar o usuário
       errorMessage(error);
@@ -69,12 +71,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
       setUser(response.data);
 
-      api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${response.data.token}`;
-
-      localStorage.setItem("@Auth:user", JSON.stringify(response.data.user));
-      localStorage.setItem("@Auth:token", response.data.token);
+      saveAuth(response.data);
       setSigned(true);
       sucessMessage("Logado com sucesso!");
       navigate("/users");
@@ -127,7 +124,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const values = {
     user,
     signIn,
-    signUp,
+    createUser,
     signed,
     signOut,
     updateUser,
