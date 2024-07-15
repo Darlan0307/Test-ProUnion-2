@@ -33,7 +33,7 @@ const ListUsers = () => {
 
   return (
     <div>
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-6">
         <Button onClick={handleSignOut} size="icon" className="rounded-full">
           <LogOut />
         </Button>
@@ -54,7 +54,7 @@ const ListUsers = () => {
         <TableBody>
           {dataUsers.length == 0 && (
             <TableRow>
-              <TableCell className="font-medium text-lg" colSpan={5}>
+              <TableCell className="font-medium text-center" colSpan={5}>
                 Sem usuários cadastrados
               </TableCell>
             </TableRow>
