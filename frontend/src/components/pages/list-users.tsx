@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { UseDataUsers } from "@/hooks/fetch-users";
+import DialogCreateUser from "../dialog-create-user";
 
 const ListUsers = () => {
   const navigate = useNavigate();
@@ -37,8 +38,9 @@ const ListUsers = () => {
           <LogOut />
         </Button>
       </div>
-      <h2 className="text-3xl mb-8">Lista de Usuários</h2>
-      <Table>
+      <h2 className="text-3xl mb-8 text-center">Gerenciamento de Usuários</h2>
+      <DialogCreateUser />
+      <Table className="mt-8">
         <TableCaption>Lista de todos os usuários cadastrados.</TableCaption>
         <TableHeader>
           <TableRow>

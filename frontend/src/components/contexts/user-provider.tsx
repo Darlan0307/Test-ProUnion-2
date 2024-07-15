@@ -58,6 +58,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         // Notificando que o usuário foi criado com sucesso
         sucessMessage("Conta criada com sucesso!");
         navigate("/users");
+      } else {
+        setReloadData(true);
+        sucessMessage("Usuário criado com sucesso!");
       }
     } catch (error) {
       // Notificando que houve um erro ao criar o usuário
