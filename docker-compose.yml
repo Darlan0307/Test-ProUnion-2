@@ -11,6 +11,8 @@ services:
       - "5432:5432"
     volumes: # Volume para persistir os dados do banco
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - desafio
 
   api:
     container_name: api-darlan
@@ -21,6 +23,8 @@ services:
       - ./backend/.env
     depends_on: # a api depende do postgres para funcionar
       - postgres
+    networks:
+      - desafio
 
   app:
     container_name: app-darlan
@@ -29,6 +33,11 @@ services:
       - "3007:3007"
     depends_on: # o app depende da api para funcionar
       - api
+    networks:
+      - desafio
+
+networks:
+  desafio:
 
 volumes:
   postgres-data:
